@@ -1,0 +1,3 @@
+[submodule "lib"]
+	path = lib
+	url = https://gitlab.esiea.fr/esieatoy/esieatoy-micropython.git
