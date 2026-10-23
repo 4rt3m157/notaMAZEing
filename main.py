@@ -13,7 +13,7 @@ def pos(k):
     return (k // 2) * (CORIDOR + WALL) + (CORIDOR if k % 2 else 0)
 
 
-def draw_laby(buffer_image):
+def draw_buff_laby(buffer_image):
     buffer_image.fill(0)
     for i in range(LINES):
         for j in range(COLUMN):
@@ -32,7 +32,7 @@ def draw_laby(buffer_image):
                 else:  # 1 px
                     buffer_image.line(x, y, x, y, 1)
     buffer_image.rect(4, 10, 121, 55, 1)
-    buffer_image.text(f"J1 {seed}", 0, 0)
+    buffer_image.text(f"{config['name']} {seed}", 0, 0)
     buffer_image.rect(119, 60, 121, 64, 1, True)
 
 
@@ -46,35 +46,56 @@ joueur_fb.fill(1)
 ## TODO SOCKET
 config = lire_config()
 sta = connection(config["wifi_ssid"], config["wifi_password"])
+seedRcv = 0
+print(seedRcv)
+import socket
 
-seed = init_seed()
+s = socket.socket()
+try:
+    s.connect(("192.168.1.178", 5000))
+except ConnectionError as e:
+    print("ConnectionError")
+s.send((json.dumps({"name": config["name"], "color": config["color"]}) + "\n").encode())
+seedRcv = s.recv(100).decode('utf-8')  ## take seed
+seed = int(seedRcv)
+print("seed :", seed)
+
+# while seedRcv is not None:
+#    seedRcv += int(s.recv(10))
+seed = init_seed(seed)
 labrinthe = dig_a_laby()
-draw_laby(laby_fb)
+draw_buff_laby(laby_fb)
 
+xPlayer, yPlayer = 6, 11
 
-xPlayer, yPlayer = 55, 110
 # if a + b pressed, mode light
+toy.clear()
+toy.text("A+B mode", 0, 0)
+toy.text("light", 10, 0)
+toy.show()
+# time.sleep(300)
 if toy.button_pressed("A") and toy.button_pressed("B"):
     toy.screen.invert(1)
     xPlayer, yPlayer = 6, 11
-
+temps = time.time()
 while True:
-
     if toy.button_pressed("A"):
-        toy.beep(440, 100)
-        seed = init_seed()
-        print(seed)
-        labrinthe = dig_a_laby()
-        draw_laby(laby_fb)
+        s.close()
+    # toy.beep(440, 100)
+    #   seed = init_seed()
+    #  print(seed)
+    # labrinthe = dig_a_laby()
+    # draw_laby(laby_fb)
     tmpX = int(toy.accel_x() * SPEED)
     tmpY = int(toy.accel_y() * SPEED)
     xPlayer += tmpX
     yPlayer -= tmpY
-    if (laby_fb.pixel(xPlayer,
-                      yPlayer) == 0):  # je check avec le milieu du joueur, parce que 2px de marge de manoeuvre c'est vraiment sadique comme jeux...
+    if (laby_fb.pixel(xPlayer + 1,
+                      yPlayer + 1) == 0):  # je check avec le milieu du joueur, parce que 2px de marge de manoeuvre c'est vraiment sadique comme jeux...
         if ((xPlayer > 119) and (60 > yPlayer)):
             toy.clear()
-            toy.text("WINNEUUUR", 0,0)
+            toy.text("WINNEUUUR", 0, 0)
+            s.send(b"WIN\n")
             toy.show()
             break
     else:  ## LE MUUUUR
@@ -82,6 +103,9 @@ while True:
         yPlayer += tmpY
         toy.beep(300, 30)
 
+    s.send(f"{xPlayer} {yPlayer}\n".encode())
     toy.blit(laby_fb, 0, 0)
     toy.blit(joueur_fb, xPlayer, yPlayer)
+    temps = time.time() - temps
+    toy.text(str(temps), 25, 0)
     toy.show()
