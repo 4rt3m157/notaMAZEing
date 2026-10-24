@@ -21,7 +21,7 @@ surv = select.poll()
 for i in range(nbJoueur):
     conn, addr = srv.accept()
     fd = conn.fileno()
-    infos = json.loads(conn.recv(200).decode('utf-8'))
+    infos = json.loads(conn.recv(200).decode('utf-8')) # envoie json pour couleur, nom.
     sockets[fd] = ""
     conns[fd] = conn
     update[fd] = (6, 11)
@@ -34,7 +34,7 @@ for i in range(nbJoueur):
 SCREEN_W, SCREEN_H = 128, 64
 JOUEUR = 3
 SCALE = 6
-BLANC = (255, 255, 255)
+BLANC = (1, 1, 1)
 
 seed = init_seed(12341)
 labrinthe = dig_a_laby()

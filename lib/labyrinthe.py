@@ -3,8 +3,8 @@ import random as rand
 from lib.config import *
 
 
-def init_seed():
-    seed = rand.randint(0, 10000)
+def init_seed(seed):
+    #seed = rand.randint(0, 10000)
     rand.seed(seed)
     return seed
 
@@ -47,4 +47,4 @@ def dig_a_laby():
             visited.append([x, y])
             fildAriane.append([x, y])
 
-    return labrinthe  # plus pratique pour généré a la volé des labyrinthe. Pourquoi faire ca ? debug °-°
+    return labrinthe  # plus pratique pour généré a la volé des labyrinthe. Pourquoi faire ca ? debug °-° et aussi pour le server du coup

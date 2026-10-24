@@ -4,11 +4,6 @@ import time
 import network
 
 
-def lire_config(path="config.json"):
-    with open(path) as f:
-        return json.load(f)
-
-
 def scan():
     sta = network.WLAN(network.STA_IF)
     sta.active(True)

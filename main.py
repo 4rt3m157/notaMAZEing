@@ -5,7 +5,7 @@ from lib.labyrinthe import *
 from lib.network import *
 
 toy = EsieaToy()
-
+thruttle = 0
 
 def pos(k):
     # à quel pixel commencer à dessiner (cf p40)
@@ -49,12 +49,15 @@ sta = connection(config["wifi_ssid"], config["wifi_password"])
 seedRcv = 0
 print(seedRcv)
 import socket
-
 s = socket.socket()
-try:
-    s.connect(("192.168.1.178", 5000))
-except ConnectionError as e:
-    print("ConnectionError")
+conOk = False
+while conOk != True:
+    try:
+        s.connect(("192.168.1.178", 5000))
+        conOk = True
+    except ConnectionError as e:
+        print("ConnectionError")
+        continue
 s.send((json.dumps({"name": config["name"], "color": config["color"]}) + "\n").encode())
 seedRcv = s.recv(100).decode('utf-8')  ## take seed
 seed = int(seedRcv)
@@ -74,6 +77,7 @@ toy.text("A+B mode", 0, 0)
 toy.text("light", 10, 0)
 toy.show()
 # time.sleep(300)
+
 if toy.button_pressed("A") and toy.button_pressed("B"):
     toy.screen.invert(1)
     xPlayer, yPlayer = 6, 11
@@ -106,6 +110,9 @@ while True:
     s.send(f"{xPlayer} {yPlayer}\n".encode())
     toy.blit(laby_fb, 0, 0)
     toy.blit(joueur_fb, xPlayer, yPlayer)
-    temps = time.time() - temps
-    toy.text(str(temps), 25, 0)
+    thruttle += 1
+    toy.text(str(temps), 800, 0)
+    if thruttle > 10:
+        temps = time.time() - temps
+        thruttle = 0
     toy.show()
