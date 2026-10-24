@@ -6,7 +6,7 @@ from lib.network import *
 
 toy = EsieaToy()
 thruttle = 0
-
+penalite = 0
 def pos(k):
     # à quel pixel commencer à dessiner (cf p40)
     # salle+Wall     #6                     #Wall ?
@@ -43,8 +43,8 @@ joueur_buf = bytearray(9)  # nb pxl joueur
 joueur_fb = framebuf.FrameBuffer(joueur_buf, JOUEUR, JOUEUR, framebuf.MONO_VLSB)
 joueur_fb.fill(1)
 
-## TODO SOCKET
 config = lire_config()
+toy.led(config["color"][1],config["color"][2],config["color"][3])
 sta = connection(config["wifi_ssid"], config["wifi_password"])
 seedRcv = 0
 print(seedRcv)
@@ -59,12 +59,10 @@ while conOk != True:
         print("ConnectionError")
         continue
 s.send((json.dumps({"name": config["name"], "color": config["color"]}) + "\n").encode())
-seedRcv = s.recv(100).decode('utf-8')  ## take seed
+seedRcv = s.recv(100).decode('utf-8')  ## take seed, il faudrait aussi take la clé pour la comparer
 seed = int(seedRcv)
 print("seed :", seed)
 
-# while seedRcv is not None:
-#    seedRcv += int(s.recv(10))
 seed = init_seed(seed)
 labrinthe = dig_a_laby()
 draw_buff_laby(laby_fb)
@@ -76,7 +74,7 @@ toy.clear()
 toy.text("A+B mode", 0, 0)
 toy.text("light", 10, 0)
 toy.show()
-# time.sleep(300)
+time.sleep(300)
 
 if toy.button_pressed("A") and toy.button_pressed("B"):
     toy.screen.invert(1)
@@ -85,11 +83,6 @@ temps = time.time()
 while True:
     if toy.button_pressed("A"):
         s.close()
-    # toy.beep(440, 100)
-    #   seed = init_seed()
-    #  print(seed)
-    # labrinthe = dig_a_laby()
-    # draw_laby(laby_fb)
     tmpX = int(toy.accel_x() * SPEED)
     tmpY = int(toy.accel_y() * SPEED)
     xPlayer += tmpX
@@ -106,7 +99,8 @@ while True:
         xPlayer -= tmpX
         yPlayer += tmpY
         toy.beep(300, 30)
-
+        penalite += 1
+        
     s.send(f"{xPlayer} {yPlayer}\n".encode())
     toy.blit(laby_fb, 0, 0)
     toy.blit(joueur_fb, xPlayer, yPlayer)
