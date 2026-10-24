@@ -1,22 +1,7 @@
-17 ligne 40 colonne
-0123456789012345678901234567890123456789
-     1           1     1   1           1
-1111 1 111111111 111 1 1 1 1 11111 111 1
-   1 1         1     1 1 1   1   1 1   1
-11 1 1 1111111 1111111 11111 1 1 1 1 111
-   1 1       1 1   1       1 1 1 1 1   1
- 111 1 1111111 1 1 1111111 111 1 11111 1
-     1 1     1   1   1   1   1 1       1
- 11111 1 111 1111111 1 11111 1 1111111 1
-   1 1 1 1 1       1 1     1 1 1   1   1
-11 1 1 1 1 1111111 1 111 1 1 1 1 1 11111
-   1   1 1     1   1   1 1 1 1   1     1
- 1111111 1 1 111 111 1 1 1 1 11111 111 1
- 1     1 1 1     1   1 1 1 1     1 1   1
- 111 1 1 111 111111111 1 1111111 111 1 1
-   1 1 1   1 1       1 1 1     1   1 1 1
-11 1 1 111 1 111 111 1 1 1 111 111 1 1 1
-     1     1     1     1     1       1 1
-1111111111111111111111111111111111111111
+La seed est pas la même parce que l'algo random n'est pas le même sur des esp ou sur un PC. 
+l'ordre : lancement serveur -> allumage carte est nécessaire.
+on peut se téléporter a travers les murs mais c'est voulue parce que c'est trop compliqué autrement. 
+Pénalité comptés mais pas implémenté
+Pas de clé de sécurité du json
 
-comment c'était galère ça
+J'ai pas la force de faire plus que ca
